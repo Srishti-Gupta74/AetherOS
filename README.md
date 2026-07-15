@@ -1,5 +1,7 @@
 # 🪐 AETHER-OS: The Reality Loom
 
+[![Live on Vercel](https://img.shields.io/badge/Live_on_Vercel-https%3A%2F%2Faether--os--pied.vercel.app-00F2FE?style=for-the-badge&logo=vercel&logoColor=black&labelColor=04050a)](https://aether-os-pied.vercel.app/)
+
 > **INTERDIMENSIONAL COMMAND & CAUSAL CONTROL OPERATING SYSTEM (`v9.4`)**  
 > *Stellar Hack 2026 Submission — Theme: Reality Reimagined*
 
@@ -11,8 +13,7 @@
 * **PARTICIPANT NAME:** `Srishti Suman Gupta`  
 * **ROLE:** `Solo Reality Architect — Full-Stack Engineer, Chrono-UI/UX Designer & 3D Specialist`  
 * **CLUB / INSTITUTION:** `COSMOS — The Science Club, Manipal University Jaipur (MUJ)`  
-* **PROJECT ARCHITECTURE:** `Frontend-Only Web Application (React + Vite + Three.js / R3F)` — *No Backend, No Database, No API Keys Required*  
-* **LIVE VERCEL DEPLOYMENT LINK:** `[ INSERT YOUR VERCEL URL HERE, e.g., https://aether-os-interstellar.vercel.app ]`  
+* **LIVE VERCEL DEPLOYMENT LINK:** [https://aether-os-pied.vercel.app/](https://aether-os-pied.vercel.app/)  
 
 ---
 
@@ -69,7 +70,13 @@ Restoration of dimensional stability to **99.9% across Sector 4**, halting the P
 
 ---
 
-## 🚀 How to Run Locally
+## 🚀 How to Run & Inspect
+
+### 🌐 Instant Live Evaluation (`Recommended`)
+* **Click here to launch the live simulation on Vercel:** [https://aether-os-pied.vercel.app/](https://aether-os-pied.vercel.app/)
+* *(For the best evaluation experience, enter Fullscreen (`F11` or click `⛶ ENTER FULLSCREEN`) upon loading)*
+
+### 💻 Run Locally
 
 1. **Clone & Install Dependencies:**
    ```bash
