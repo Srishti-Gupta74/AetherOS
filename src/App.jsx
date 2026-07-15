@@ -49,6 +49,22 @@ const AudioSystem = (() => {
       // Crisp, gentle double crystal chime when switching tabs (pure sine)
       tone(528, 0.2, 'sine', 0.04)
       setTimeout(() => tone(639, 0.25, 'sine', 0.035), 80)
+    },
+    victoryFanfare: () => {
+      // Cinematic triumphant sci-fi hyperspeed warp & crystal Solfeggio chord when mission completes!
+      // 1. Deep quantum warp swell (bass sine)
+      tone(108, 1.8, 'sine', 0.08)
+      tone(216, 1.5, 'sine', 0.06)
+      
+      // 2. Triumphant ascending celestial crystal chords (432.8 Hz -> 528 Hz -> 639 Hz -> 852 Hz -> 1056 Hz)
+      const fanfareFreqs = [432.8, 528, 639, 852, 1056]
+      fanfareFreqs.forEach((f, idx) => {
+        setTimeout(() => {
+          tone(f, 1.4 - idx * 0.1, 'sine', 0.065 - idx * 0.006)
+          // Add a subtle sawtooth harmonic shimmer for sci-fi richness
+          tone(f * 1.5, 0.4, 'triangle', 0.02)
+        }, idx * 160)
+      })
     }
   }
 })()
@@ -1729,18 +1745,16 @@ function ResonanceTuner({ freq, phase, setFreq, setPhase, aligned, doRetune }) {
 }
 
 /* ══════════════════════════════════════════════
-   MISSION ACCOMPLISHED — SURREAL HYPERSONIC LEAP & TROPHY ENDING
-══════════════════════════════════════════════ */
-/* ══════════════════════════════════════════════
-   MISSION ACCOMPLISHED — HYPERSPEED WARP & ROCKET RETURN FLIGHT ENDING
+   MISSION ACCOMPLISHED — HYPERSPEED WARP ENDING
 ══════════════════════════════════════════════ */
 function VictoryModal({ open, onClose, onRestart }) {
   const [phase, setPhase] = useState('transit') // 'transit' = Hyperspeed Warp | 'docked' = Council Terminal | 'dossier' = Classified Military Certificate
   
-  // Reset to transit when opened
+  // Reset to transit and play triumphant sci-fi victory sound when opened
   useEffect(() => {
     if (open) {
       setPhase('transit')
+      AudioSystem.victoryFanfare()
     }
   }, [open])
 
