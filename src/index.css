@@ -510,8 +510,13 @@ body::before {
 .corner-bl { bottom: 0; left: 0; border-bottom: 2px solid; border-left: 2px solid; border-radius: 0 0 0 3px; }
 .corner-br { bottom: 0; right: 0; border-bottom: 2px solid; border-right: 2px solid; border-radius: 0 0 3px 0; }
 
-/* ── SPIN (for boot rings + confirmation icon) ── */
+/* ── SPIN (for boot rings + confirmation icon + victory reactor) ── */
 @keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spinReverse { to { transform: rotate(-360deg); } }
+@keyframes alertP { 
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 16px rgba(255, 215, 0, 0.8)); } 
+  50% { transform: scale(1.06); filter: drop-shadow(0 0 30px rgba(0, 242, 254, 0.9)); } 
+}
 
 /* ── REALITY DISTORTION OVERLAY ── */
 .reality-distortion {
@@ -548,4 +553,20 @@ body::before {
 /* ── VIEWPORT-3D DRAG CURSOR ── */
 .viewport-3d { cursor: crosshair; }
 .viewport-3d:active { cursor: crosshair; }
+
+/* ── HYPERSPEED ROCKET ENDING ANIMATIONS ── */
+@keyframes warpStreak {
+  0% { transform: rotate(var(--angle, 0deg)) translateX(20px) scaleX(0.1); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: rotate(var(--angle, 0deg)) translateX(650px) scaleX(2.5); opacity: 0; }
+}
+@keyframes shipVibrate {
+  0% { transform: translate(-2px, -3px) rotate(-0.5deg); }
+  50% { transform: translate(2px, 1px) rotate(0.5deg); }
+  100% { transform: translate(-1px, 2px) rotate(-0.2deg); }
+}
+@keyframes thrusterPulse {
+  0% { opacity: 0.6; transform: scaleY(0.85); filter: drop-shadow(0 0 15px #00F2FE); }
+  100% { opacity: 1; transform: scaleY(1.25); filter: drop-shadow(0 0 35px #a855f7); }
+}
 

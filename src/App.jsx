@@ -1731,223 +1731,392 @@ function ResonanceTuner({ freq, phase, setFreq, setPhase, aligned, doRetune }) {
 /* ══════════════════════════════════════════════
    MISSION ACCOMPLISHED — SURREAL HYPERSONIC LEAP & TROPHY ENDING
 ══════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════
+   MISSION ACCOMPLISHED — HYPERSPEED WARP & ROCKET RETURN FLIGHT ENDING
+══════════════════════════════════════════════ */
 function VictoryModal({ open, onClose, onRestart }) {
-  const [mode, setMode] = useState('warp') // 'warp' = Hypersonic Leap | 'stats' = Surreal Ending Screen
+  const [phase, setPhase] = useState('transit') // 'transit' = Hyperspeed Rocket Flight | 'docked' = Council Terminal | 'dossier' = Classified Military Certificate
+  const [warpSpeed, setWarpSpeed] = useState(1.0)
+  
+  // Reset to transit when opened
+  useEffect(() => {
+    if (open) {
+      setPhase('transit')
+      setWarpSpeed(1.0)
+    }
+  }, [open])
+
   if (!open) return null
 
+  // Generate deterministic hyperspeed light streaks for the warp tunnel
+  const warpLines = Array.from({ length: 48 }).map((_, i) => ({
+    id: i,
+    angle: (i * 360) / 48 + (i % 3) * 5,
+    delay: (i % 7) * 0.15,
+    duration: 0.6 + (i % 4) * 0.15,
+    length: 120 + (i % 5) * 60,
+    color: i % 4 === 0 ? '#FFD700' : i % 3 === 0 ? '#00ff88' : i % 2 === 0 ? '#a855f7' : '#00F2FE'
+  }))
+
   return (
-    <div className="modal-ov" style={{ zIndex: 9999, background: 'rgba(2, 4, 12, 0.88)', backdropFilter: 'blur(20px)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
+    <div className="modal-ov" style={{
+      position: 'fixed', inset: 0, zIndex: 99999,
+      background: phase === 'transit' 
+        ? 'radial-gradient(ellipse at center, rgba(8, 18, 48, 0.95) 0%, rgba(2, 4, 12, 0.99) 100%)' 
+        : 'radial-gradient(circle at center, rgba(4, 10, 26, 0.94) 0%, rgba(2, 4, 12, 0.99) 100%)',
+      backdropFilter: 'blur(30px)', display: 'flex', alignItems: 'center', justifyContent: 'center',
+      overflow: 'hidden', perspective: '1200px'
+    }}>
       
-      {/* ─── MODE A: SPECTACULAR HOLOGRAPHIC VICTORY PORTAL ─── */}
-      {mode === 'warp' && (
-        <div style={{ position: 'relative', zIndex: 6, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', pointerEvents: 'auto' }}>
+      {/* ─── FULL-SCREEN HYPERSPEED WARP TUNNEL BACKGROUND EFFECTS (Active in all phases, intense in transit) ─── */}
+      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+        {/* Central Warp Horizon Glow */}
+        <div style={{
+          position: 'absolute', width: phase === 'transit' ? 600 : 900, height: phase === 'transit' ? 600 : 900,
+          borderRadius: '50%', background: 'radial-gradient(circle, rgba(0, 242, 254, 0.25) 0%, rgba(168, 85, 247, 0.12) 40%, transparent 70%)',
+          animation: phase === 'transit' ? 'quantumPulse 1.2s infinite ease-in-out' : 'quantumPulse 4s infinite ease-in-out',
+          transition: 'all 1s cubic-bezier(0.16, 1, 0.3, 1)'
+        }}/>
+
+        {/* Radiating Light Streaks (Hyperspeed Tunnel) */}
+        {phase === 'transit' && warpLines.map(w => (
+          <div key={w.id} style={{
+            position: 'absolute', top: '50%', left: '50%',
+            width: w.length, height: 2.5,
+            background: `linear-gradient(90deg, transparent, ${w.color}, #FFF)`,
+            transformOrigin: '0 50%',
+            '--angle': `${w.angle}deg`,
+            transform: `rotate(${w.angle}deg) translateX(${60 + (w.id % 4) * 30}px)`,
+            opacity: 0.85,
+            animation: `warpStreak ${w.duration}s linear infinite`,
+            animationDelay: `${w.delay}s`,
+            filter: `drop-shadow(0 0 8px ${w.color})`
+          }}/>
+        ))}
+
+        {/* High-Tech Cockpit HUD Overlay Reticles */}
+        <div style={{ position: 'absolute', inset: 24, border: '1px solid rgba(0, 242, 254, 0.18)', borderRadius: 24, pointerEvents: 'none' }}>
+          <div style={{ position: 'absolute', top: 12, left: 16, fontFamily: 'var(--font-mono)', fontSize: 11, color: '#00F2FE', letterSpacing: 2, fontWeight: 800 }}>
+            ✦ AETHER-OS CHRONO-NAVIGATION HUD · FLIGHT NEXUS-7
+          </div>
+          <div style={{ position: 'absolute', top: 12, right: 16, fontFamily: 'var(--font-mono)', fontSize: 11, color: '#00ff88', letterSpacing: 2, fontWeight: 800 }}>
+            [ HYPERSPEED WARP VECTOR: 99.999% c ]
+          </div>
+          <div style={{ position: 'absolute', bottom: 12, left: 16, fontFamily: 'var(--font-mono)', fontSize: 11, color: '#FFD700', letterSpacing: 2, fontWeight: 800 }}>
+            SECTOR 4 PARADOX CASCADE: 0.0% (SEALED)
+          </div>
+          <div style={{ position: 'absolute', bottom: 12, right: 16, fontFamily: 'var(--font-mono)', fontSize: 11, color: '#a855f7', letterSpacing: 2, fontWeight: 800 }}>
+            DESTINATION: INTERDIMENSIONAL COUNCIL HQ
+          </div>
+        </div>
+      </div>
+
+      {/* ─── PHASE 1: HYPERSPEED ROCKET FLIGHT HOME (TRAVELLING BACK IN CHRONO-SHUTTLE) ─── */}
+      {phase === 'transit' && (
+        <div style={{ position: 'relative', zIndex: 20, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', maxWidth: 860, textAlign: 'center', animation: 'popIn 0.5s cubic-bezier(0.16, 1, 0.3, 1)' }}>
           
-          {/* Top Hypersonic Telemetry Banner */}
-          <div style={{ marginBottom: 20, padding: '8px 24px', borderRadius: 30, background: 'linear-gradient(90deg, rgba(8,14,32,0.95), rgba(16,24,52,0.95))', border: '1px solid #00F2FE', boxShadow: '0 0 30px rgba(0,242,254,0.4)', display: 'flex', alignItems: 'center', gap: 12 }}>
-            <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#00ff88', boxShadow: '0 0 12px #00ff88', animation: 'blink 0.8s infinite' }}/>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 900, color: '#00F2FE', letterSpacing: 2.5 }}>
-              HYPERSONIC SLIPSTREAM · VELOCITY: 99.998% c
-            </span>
-            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10, padding: '2px 10px', borderRadius: 16, background: 'rgba(0,255,136,0.18)', border: '1px solid #00ff88', color: '#00ff88', fontWeight: 800 }}>
-              SECTOR 4 SECURED ✓
-            </span>
+          {/* Top Flight Status Badge */}
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 12, padding: '8px 24px', borderRadius: 30,
+            background: 'rgba(0, 242, 254, 0.12)', border: '1.5px solid #00F2FE', color: '#00F2FE',
+            fontFamily: 'var(--font-mono)', fontSize: 12, fontWeight: 950, letterSpacing: 3, marginBottom: 28,
+            boxShadow: '0 0 35px rgba(0, 242, 254, 0.45)'
+          }}>
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#00ff88', boxShadow: '0 0 12px #00ff88', animation: 'blink 0.6s infinite' }}/>
+            <span>MISSION COMPLETE · CHRONO-SHUTTLE RETURNING TO HQ</span>
           </div>
 
-          {/* Center Classy Holographic Victory Console */}
-          <div style={{ maxWidth: 680, width: '100%', padding: '42px 46px', borderRadius: 28, background: 'linear-gradient(145deg, rgba(14, 22, 48, 0.94) 0%, rgba(5, 8, 20, 0.98) 100%)', border: '1.5px solid rgba(255,215,0,0.45)', boxShadow: '0 0 120px rgba(0,242,254,0.3), 0 0 60px rgba(255,215,0,0.2), inset 0 0 50px rgba(0,242,254,0.12)', backdropFilter: 'blur(30px)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+          {/* ─── THE 3D CYBERNETIC CHRONO-ROCKET SHIP IN HYPERSPEED ─── */}
+          <div style={{ position: 'relative', width: 280, height: 220, margin: '0 auto 28px', display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'shipVibrate 0.12s infinite alternate ease-in-out' }}>
             
-            {/* High-Tech Corner Reticle Accents */}
-            <div style={{ position: 'absolute', top: 16, left: 16, width: 22, height: 22, borderTop: '2px solid #FFD700', borderLeft: '2px solid #FFD700' }}/>
-            <div style={{ position: 'absolute', top: 16, right: 16, width: 22, height: 22, borderTop: '2px solid #FFD700', borderRight: '2px solid #FFD700' }}/>
-            <div style={{ position: 'absolute', bottom: 16, left: 16, width: 22, height: 22, borderBottom: '2px solid #FFD700', borderLeft: '2px solid #FFD700' }}/>
-            <div style={{ position: 'absolute', bottom: 16, right: 16, width: 22, height: 22, borderBottom: '2px solid #FFD700', borderRight: '2px solid #FFD700' }}/>
+            {/* Plasma Thruster Exhaust Cones (Left & Right) */}
+            <div style={{ position: 'absolute', bottom: 10, left: 68, width: 28, height: 75, background: 'linear-gradient(180deg, #00F2FE 0%, #a855f7 50%, transparent 100%)', borderRadius: '50% 50% 10% 10%', filter: 'drop-shadow(0 0 20px #00F2FE)', animation: 'thrusterPulse 0.15s infinite alternate' }}/>
+            <div style={{ position: 'absolute', bottom: 10, right: 68, width: 28, height: 75, background: 'linear-gradient(180deg, #00F2FE 0%, #a855f7 50%, transparent 100%)', borderRadius: '50% 50% 10% 10%', filter: 'drop-shadow(0 0 20px #00F2FE)', animation: 'thrusterPulse 0.15s infinite alternate' }}/>
+            <div style={{ position: 'absolute', bottom: -15, left: '50%', transform: 'translateX(-50%)', width: 44, height: 110, background: 'linear-gradient(180deg, #FFD700 0%, #FF0055 60%, transparent 100%)', borderRadius: '50% 50% 10% 10%', filter: 'drop-shadow(0 0 30px #FFD700)', animation: 'thrusterPulse 0.1s infinite alternate' }}/>
 
-            {/* Glowing Trophy Crest Header */}
-            <div style={{
-              margin: '0 auto 16px', width: 68, height: 68, borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(255,215,0,0.22) 0%, rgba(0,242,254,0.04) 80%)',
-              border: '1.5px solid #FFD700', boxShadow: '0 0 35px rgba(255,215,0,0.55), inset 0 0 18px rgba(255,215,0,0.3)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 32,
-              animation: 'alertP 2.5s infinite ease-in-out'
-            }}>
-              👑
+            {/* Main Rocket Hull & Cybernetic Wings (Custom High-Tech SVG) */}
+            <svg viewBox="0 0 240 200" style={{ width: '100%', height: '100%', filter: 'drop-shadow(0 0 35px rgba(0, 242, 254, 0.75))' }}>
+              {/* Outer Swept Delta Wings */}
+              <polygon points="120,10 230,160 180,170 120,140 60,170 10,160" fill="url(#hullGrad)" stroke="#00F2FE" strokeWidth="2.5" />
+              {/* Inner Fuselage Armor Plate */}
+              <polygon points="120,25 170,145 120,165 70,145" fill="url(#armorGrad)" stroke="#FFD700" strokeWidth="2" />
+              {/* Cockpit Canopy Glass (`Gold & Cyan Holographic Shield`) */}
+              <polygon points="120,45 145,115 120,130 95,115" fill="rgba(0, 242, 254, 0.35)" stroke="#00ff88" strokeWidth="2" />
+              {/* Glowing Center Quantum Reactor Core inside ship */}
+              <circle cx="120" cy="90" r="14" fill="#FFD700" filter="drop-shadow(0 0 12px #FFD700)" />
+              <circle cx="120" cy="90" r="6" fill="#FFF" />
+              {/* Wing Laser Cannon Accents */}
+              <line x1="35" y1="140" x2="35" y2="90" stroke="#00F2FE" strokeWidth="3" strokeDasharray="6 4" />
+              <line x1="205" y1="140" x2="205" y2="90" stroke="#00F2FE" strokeWidth="3" strokeDasharray="6 4" />
+              {/* Gradients */}
+              <defs>
+                <linearGradient id="hullGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="#0a1432" />
+                  <stop offset="50%" stopColor="#060c20" />
+                  <stop offset="100%" stopColor="#02040a" />
+                </linearGradient>
+                <linearGradient id="armorGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#142452" />
+                  <stop offset="100%" stopColor="#080e24" />
+                </linearGradient>
+              </defs>
+            </svg>
+
+            {/* Glowing Orbiting Reticle around Rocket */}
+            <div style={{ position: 'absolute', inset: -10, borderRadius: '50%', border: '1.5px dashed rgba(0, 242, 254, 0.4)', animation: 'spin 10s linear infinite', pointerEvents: 'none' }}/>
+          </div>
+
+          {/* Cinematic Title & Mission Summary */}
+          <h1 style={{
+            fontFamily: 'var(--font-mono)', fontSize: 42, fontWeight: 950,
+            background: 'linear-gradient(135deg, #FFFFFF 0%, #00F2FE 45%, #FFD700 85%, #00ff88 100%)',
+            WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+            margin: '0 0 14px', letterSpacing: 5, textTransform: 'uppercase',
+            filter: 'drop-shadow(0 0 35px rgba(0, 242, 254, 0.8))'
+          }}>
+            HYPERSPEED WARP ENGAGED
+          </h1>
+
+          <p style={{ fontFamily: 'var(--font-mono)', fontSize: 15, color: '#e2e8f0', lineHeight: 1.65, margin: '0 auto 30px', maxWidth: 660, fontWeight: 500 }}>
+            Chief Reality Architect, your temporal precision inside the interdimensional slipstream has successfully neutralised the Sector 4 Paradox Cascade. Your Chrono-Shuttle is travelling at lightspeed (<strong style={{ color: '#00F2FE' }}>99.999% c</strong>) bearing <strong style={{ color: '#00ff88', fontWeight: 900 }}>42 Billion rescued lives</strong> back to headquarters.
+          </p>
+
+          {/* Real-Time Cockpit Telemetry Stream Banner */}
+          <div style={{
+            width: '100%', maxWidth: 720, padding: '16px 22px', borderRadius: 16,
+            background: 'rgba(6, 12, 32, 0.85)', border: '1px solid rgba(0, 242, 254, 0.35)',
+            marginBottom: 32, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14,
+            fontFamily: 'var(--font-mono)', textAlign: 'left', boxShadow: 'inset 0 0 25px rgba(0, 242, 254, 0.08)'
+          }}>
+            <div>
+              <div style={{ fontSize: 10, color: '#94a3b8', letterSpacing: 1.5, fontWeight: 700 }}>FLIGHT VECTOR</div>
+              <div style={{ fontSize: 15, color: '#00F2FE', fontWeight: 900, marginTop: 4 }}>LIGHTSPEED WARP</div>
             </div>
+            <div>
+              <div style={{ fontSize: 10, color: '#94a3b8', letterSpacing: 1.5, fontWeight: 700 }}>CAUSAL INTEGRITY</div>
+              <div style={{ fontSize: 15, color: '#00ff88', fontWeight: 900, marginTop: 4 }}>100.0% SEALED ✓</div>
+            </div>
+            <div>
+              <div style={{ fontSize: 10, color: '#94a3b8', letterSpacing: 1.5, fontWeight: 700 }}>PASSENGER STATUS</div>
+              <div style={{ fontSize: 15, color: '#FFD700', fontWeight: 900, marginTop: 4 }}>42.0B SECURED</div>
+            </div>
+          </div>
 
-            {/* Sub-Badges */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 10, flexWrap: 'wrap', marginBottom: 16 }}>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 900, padding: '4px 14px', borderRadius: 20, background: 'rgba(0,242,254,0.15)', border: '1px solid #00F2FE', color: '#00F2FE', letterSpacing: 2 }}>
-                ✦ CAUSAL CONTINUITY RESTORED ✦
-              </span>
-              <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, fontWeight: 900, padding: '4px 14px', borderRadius: 20, background: 'rgba(255,215,0,0.18)', border: '1px solid #FFD700', color: '#FFD700', letterSpacing: 1.5 }}>
-                🏆 LEVEL 9 CHRONO-ARCHITECT
-              </span>
+          {/* Primary Hyperspeed Action Button */}
+          <button
+            onClick={() => { AudioSystem.warpLeap(); setPhase('docked') }}
+            style={{
+              padding: '18px 36px', borderRadius: 20,
+              background: 'linear-gradient(135deg, #00F2FE 0%, #0088ff 50%, #a855f7 100%)',
+              border: '2px solid #FFFFFF', color: '#04050A', fontFamily: 'var(--font-mono)',
+              fontSize: 14.5, fontWeight: 950, cursor: 'pointer', letterSpacing: 2.2,
+              boxShadow: '0 0 50px rgba(0, 242, 254, 0.9), 0 0 25px rgba(255, 255, 255, 0.8)',
+              transition: 'all 0.3s ease', animation: 'quantumPulse 1.6s infinite ease-in-out',
+              textTransform: 'uppercase', display: 'flex', alignItems: 'center', gap: 12
+            }}
+          >
+            <span style={{ fontSize: 18 }}>🛰️</span> DOCK AT COUNCIL HEADQUARTERS & RECEIVE CHRONO-ARCHITECT HONORS ➔
+          </button>
+        </div>
+      )}
+
+      {/* ─── PHASE 2: THE GRAND COUNCIL DOCKING BAY & HOLOGRAPHIC CITATION TERMINAL ─── */}
+      {phase === 'docked' && (
+        <div style={{ position: 'relative', zIndex: 20, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%', maxWidth: 780, pointerEvents: 'auto', animation: 'popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+          
+          <div style={{ width: '100%', padding: '44px 50px', borderRadius: 32, background: 'linear-gradient(145deg, rgba(14, 22, 52, 0.96) 0%, rgba(6, 9, 24, 0.99) 100%)', border: '2px solid rgba(0, 242, 254, 0.65)', boxShadow: '0 0 160px rgba(0, 242, 254, 0.35), 0 0 90px rgba(255, 215, 0, 0.25), inset 0 0 60px rgba(0, 242, 254, 0.15)', backdropFilter: 'blur(36px)', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+            
+            {/* Corner Gold & Cyan Brackets */}
+            <div style={{ position: 'absolute', top: 18, left: 18, width: 26, height: 26, borderTop: '3px solid #00F2FE', borderLeft: '3px solid #00F2FE', filter: 'drop-shadow(0 0 8px #00F2FE)' }}/>
+            <div style={{ position: 'absolute', top: 18, right: 18, width: 26, height: 26, borderTop: '3px solid #00F2FE', borderRight: '3px solid #00F2FE', filter: 'drop-shadow(0 0 8px #00F2FE)' }}/>
+            <div style={{ position: 'absolute', bottom: 18, left: 18, width: 26, height: 26, borderBottom: '3px solid #FFD700', borderLeft: '3px solid #FFD700', filter: 'drop-shadow(0 0 8px #FFD700)' }}/>
+            <div style={{ position: 'absolute', bottom: 18, right: 18, width: 26, height: 26, borderBottom: '3px solid #FFD700', borderRight: '3px solid #FFD700', filter: 'drop-shadow(0 0 8px #FFD700)' }}/>
+
+            {/* Council Emblem */}
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '7px 24px', borderRadius: 28, background: 'rgba(255, 215, 0, 0.2)', border: '1.5px solid #FFD700', color: '#FFD700', fontFamily: 'var(--font-mono)', fontSize: 11.5, fontWeight: 950, letterSpacing: 3, marginBottom: 18, boxShadow: '0 0 30px rgba(255, 215, 0, 0.5)' }}>
+              <span>✦ INTERDIMENSIONAL OVERSIGHT COUNCIL · DOCKING BAY 0 ✦</span>
             </div>
 
             <h1 style={{
               fontFamily: 'var(--font-mono)', fontSize: 36, fontWeight: 950,
-              background: 'linear-gradient(135deg, #FFFFFF 0%, #00F2FE 50%, #FFD700 100%)',
+              background: 'linear-gradient(135deg, #FFF 0%, #FFD700 50%, #00F2FE 100%)',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-              margin: '0 0 14px', letterSpacing: 4, textTransform: 'uppercase',
-              filter: 'drop-shadow(0 0 25px rgba(0,242,254,0.6))'
+              margin: '0 0 10px', letterSpacing: 4, textTransform: 'uppercase',
+              filter: 'drop-shadow(0 0 30px rgba(255, 215, 0, 0.8))'
             }}>
-              MISSION ACCOMPLISHED
+              GRAND MASTER CHRONO-ARCHITECT
             </h1>
-            
-            <p style={{ fontSize: 14, color: '#cbd5e1', lineHeight: 1.65, margin: '0 auto 30px', maxWidth: 540 }}>
-              You have navigated the interdimensional slipstream! All paradox fractures across Alpha-7, 8 & 9 are sealed, preserving <strong style={{ color: '#00ff88' }}>42 billion sentient lives</strong> with absolute causal integrity.
-            </p>
 
-            {/* 4-Tile Laser-Etched Holographic Crystal Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 14, marginBottom: 34, textShadow: 'none' }}>
+            <div style={{ fontFamily: 'var(--font-mono)', fontSize: 13.5, color: '#00F2FE', letterSpacing: 2.5, fontWeight: 900, marginBottom: 28 }}>
+              RANK #001 AWARDED · SECTOR 4 PARADOX CASCADE PURGED
+            </div>
+
+            {/* 4-Tile Laser-Etched Telemetry Grid (Futuristic HUD without basic emojis) */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 16, marginBottom: 34, textShadow: 'none' }}>
               
-              <div style={{ padding: '14px 18px', borderRadius: 16, background: 'linear-gradient(145deg, rgba(0,255,136,0.08) 0%, rgba(6,12,24,0.6) 100%)', border: '1px solid rgba(0,255,136,0.35)', borderTop: '3px solid #00ff88', boxShadow: 'inset 0 0 20px rgba(0,255,136,0.06), 0 8px 24px rgba(0,0,0,0.4)', textAlign: 'left' }}>
+              <div style={{ padding: '16px 20px', borderRadius: 18, background: 'linear-gradient(145deg, rgba(0,255,136,0.12) 0%, rgba(6,14,32,0.7) 100%)', border: '1.5px solid rgba(0,255,136,0.45)', borderTop: '4px solid #00ff88', boxShadow: 'inset 0 0 25px rgba(0,255,136,0.1), 0 10px 30px rgba(0,0,0,0.5)', textAlign: 'left' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9.5, color: '#94a3b8', letterSpacing: 1.5, fontWeight: 700 }}>01 · QUARANTINE</span>
-                  <span style={{ fontSize: 14 }}>🛡️</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: '#00ff88', letterSpacing: 2, fontWeight: 850 }}>01 · QUARANTINE PROTOCOL</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 14, color: '#00ff88', fontWeight: 900 }}>[ SEALED ]</span>
                 </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 16, fontWeight: 950, color: '#00ff88', marginTop: 8 }}>
-                  0.0% LOSS <span style={{ fontSize: 11, color: '#cbd5e1', fontWeight: 600 }}>(42B SAVED)</span>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 20, fontWeight: 950, color: '#00ff88', marginTop: 8, textShadow: '0 0 16px rgba(0,255,136,0.8)' }}>
+                  0.0% LOSS <span style={{ fontSize: 11.5, color: '#e2e8f0', fontWeight: 600 }}>(42B SAVED)</span>
                 </div>
+                <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 4 }}>Total Causal Isolation Achieved</div>
               </div>
 
-              <div style={{ padding: '14px 18px', borderRadius: 16, background: 'linear-gradient(145deg, rgba(0,242,254,0.08) 0%, rgba(6,12,24,0.6) 100%)', border: '1px solid rgba(0,242,254,0.35)', borderTop: '3px solid #00F2FE', boxShadow: 'inset 0 0 20px rgba(0,242,254,0.06), 0 8px 24px rgba(0,0,0,0.4)', textAlign: 'left' }}>
+              <div style={{ padding: '16px 20px', borderRadius: 18, background: 'linear-gradient(145deg, rgba(0,242,254,0.12) 0%, rgba(6,14,32,0.7) 100%)', border: '1.5px solid rgba(0,242,254,0.45)', borderTop: '4px solid #00F2FE', boxShadow: 'inset 0 0 25px rgba(0,242,254,0.1), 0 10px 30px rgba(0,0,0,0.5)', textAlign: 'left' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9.5, color: '#94a3b8', letterSpacing: 1.5, fontWeight: 700 }}>02 · RESONANCE</span>
-                  <span style={{ fontSize: 14 }}>📻</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: '#00F2FE', letterSpacing: 2, fontWeight: 850 }}>02 · HARMONIC MATRIX</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 14, color: '#00F2FE', fontWeight: 900 }}>[ LOCKED ]</span>
                 </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 16, fontWeight: 950, color: '#00F2FE', marginTop: 8 }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 20, fontWeight: 950, color: '#00F2FE', marginTop: 8, textShadow: '0 0 16px rgba(0,242,254,0.8)' }}>
                   432.8 MHz EXACT
                 </div>
+                <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 4 }}>Universal Phase Aligned at 100%</div>
               </div>
 
-              <div style={{ padding: '14px 18px', borderRadius: 16, background: 'linear-gradient(145deg, rgba(168,85,247,0.08) 0%, rgba(6,12,24,0.6) 100%)', border: '1px solid rgba(168,85,247,0.35)', borderTop: '3px solid #a855f7', boxShadow: 'inset 0 0 20px rgba(168,85,247,0.06), 0 8px 24px rgba(0,0,0,0.4)', textAlign: 'left' }}>
+              <div style={{ padding: '16px 20px', borderRadius: 18, background: 'linear-gradient(145deg, rgba(168,85,247,0.12) 0%, rgba(6,14,32,0.7) 100%)', border: '1.5px solid rgba(168,85,247,0.45)', borderTop: '4px solid #a855f7', boxShadow: 'inset 0 0 25px rgba(168,85,247,0.1), 0 10px 30px rgba(0,0,0,0.5)', textAlign: 'left' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9.5, color: '#94a3b8', letterSpacing: 1.5, fontWeight: 700 }}>03 · TIMELINE WELD</span>
-                  <span style={{ fontSize: 14 }}>⚡</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: '#d8b4fe', letterSpacing: 2, fontWeight: 850 }}>03 · CAUSAL SPLICE</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 14, color: '#d8b4fe', fontWeight: 900 }}>[ ANCHORED ]</span>
                 </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 16, fontWeight: 950, color: '#c084fc', marginTop: 8 }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 20, fontWeight: 950, color: '#c084fc', marginTop: 8, textShadow: '0 0 16px rgba(168,85,247,0.8)' }}>
                   PRIME ➔ ALPHA SPLICED
                 </div>
+                <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 4 }}>Node B Rerouted to Anchor Core</div>
               </div>
 
-              <div style={{ padding: '14px 18px', borderRadius: 16, background: 'linear-gradient(145deg, rgba(255,215,0,0.08) 0%, rgba(6,12,24,0.6) 100%)', border: '1px solid rgba(255,215,0,0.35)', borderTop: '3px solid #FFD700', boxShadow: 'inset 0 0 20px rgba(255,215,0,0.06), 0 8px 24px rgba(0,0,0,0.4)', textAlign: 'left' }}>
+              <div style={{ padding: '16px 20px', borderRadius: 18, background: 'linear-gradient(145deg, rgba(255,215,0,0.14) 0%, rgba(6,14,32,0.7) 100%)', border: '1.5px solid rgba(255,215,0,0.45)', borderTop: '4px solid #FFD700', boxShadow: 'inset 0 0 25px rgba(255,215,0,0.12), 0 10px 30px rgba(0,0,0,0.5)', textAlign: 'left' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 9.5, color: '#94a3b8', letterSpacing: 1.5, fontWeight: 700 }}>04 · ARCHITECT RANK</span>
-                  <span style={{ fontSize: 14 }}>👑</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: '#FFD700', letterSpacing: 2, fontWeight: 850 }}>04 · COUNCIL CITATION</span>
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: 14, color: '#FFD700', fontWeight: 900 }}>[ AWARDED ]</span>
                 </div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 16, fontWeight: 950, color: '#FFD700', marginTop: 8 }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 20, fontWeight: 950, color: '#FFD700', marginTop: 8, textShadow: '0 0 16px rgba(255,215,0,0.8)' }}>
                   GRAND MASTER #001
                 </div>
+                <div style={{ fontSize: 11, color: '#94a3b8', marginTop: 4 }}>Level 9 Authority Permanent Grant</div>
               </div>
 
             </div>
 
-            {/* Classy Cybernetic Command Console Buttons */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14, width: '100%' }}>
               <button
-                onClick={() => { AudioSystem.celestialTab(); setMode('stats') }}
+                onClick={() => { AudioSystem.celestialTab(); setPhase('dossier') }}
                 style={{
-                  width: '100%', padding: '16px 28px', borderRadius: 16,
-                  background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF6B00 100%)',
-                  border: '1.5px solid #fff', color: '#04060E', fontFamily: 'var(--font-mono)',
-                  fontSize: 13.5, fontWeight: 950, cursor: 'pointer', letterSpacing: 2,
-                  boxShadow: '0 0 35px rgba(255,215,0,0.55), 0 8px 20px rgba(0,0,0,0.6)', transition: 'all 0.3s ease'
+                  width: '100%', padding: '18px 30px', borderRadius: 18,
+                  background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FF0055 100%)',
+                  border: '2px solid #FFFFFF', color: '#04060E', fontFamily: 'var(--font-mono)',
+                  fontSize: 14, fontWeight: 950, cursor: 'pointer', letterSpacing: 2.2,
+                  boxShadow: '0 0 45px rgba(255,215,0,0.7), 0 0 20px rgba(255,0,85,0.6)', transition: 'all 0.3s ease',
+                  textTransform: 'uppercase'
                 }}
               >
-                🏆 ACCESS CLASSIFIED COUNCIL DOSSIER (OFFICIAL CITATION) ➔
+                ► ACCESS CLASSIFIED MILITARY DOSSIER (OFFICIAL CITATION & LOGS) ➔
               </button>
-              <button
-                onClick={() => { AudioSystem.reboot(); onRestart?.() }}
-                style={{
-                  width: '100%', padding: '14px 28px', borderRadius: 16,
-                  background: 'rgba(0, 242, 254, 0.1)', border: '1.5px solid rgba(0, 242, 254, 0.45)',
-                  color: '#00F2FE', fontFamily: 'var(--font-mono)', fontSize: 12.5, fontWeight: 850,
-                  cursor: 'pointer', letterSpacing: 2, transition: 'all 0.3s ease',
-                  boxShadow: '0 0 25px rgba(0,242,254,0.2)'
-                }}
-              >
-                ✦ RE-INITIALIZE AETHER-OS (RUN NEW SIMULATION) ➔
-              </button>
+              <div style={{ display: 'flex', gap: 14, width: '100%' }}>
+                <button
+                  onClick={() => { AudioSystem.warpLeap(); setPhase('transit') }}
+                  style={{
+                    flex: 1, padding: '15px 24px', borderRadius: 16, background: 'rgba(255,255,255,0.06)',
+                    border: '1.5px solid rgba(255,255,255,0.3)', color: '#E2E8F0', fontFamily: 'var(--font-mono)',
+                    fontSize: 12.5, fontWeight: 850, cursor: 'pointer', letterSpacing: 1.5, transition: 'all 0.3s ease'
+                  }}
+                >
+                  ◄ RETURN TO WARP TUNNEL
+                </button>
+                <button
+                  onClick={() => { AudioSystem.reboot(); onRestart?.() }}
+                  style={{
+                    flex: 1.2, padding: '15px 24px', borderRadius: 16,
+                    background: 'rgba(0, 242, 254, 0.12)', border: '1.5px solid rgba(0, 242, 254, 0.55)',
+                    color: '#00F2FE', fontFamily: 'var(--font-mono)', fontSize: 12.5, fontWeight: 900,
+                    cursor: 'pointer', letterSpacing: 1.5, transition: 'all 0.3s ease',
+                    boxShadow: '0 0 30px rgba(0,242,254,0.25)'
+                  }}
+                >
+                  ↻ RE-INITIALIZE AETHER-OS ➔
+                </button>
+              </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* ─── MODE B: SURREAL CLASSY DOSSIER & TROPHY ROOM ARCHIVE ─── */}
-      {mode === 'stats' && (
-        <div style={{ position: 'relative', zIndex: 6, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', minHeight: '100%', pointerEvents: 'auto' }}>
-          <div style={{ maxWidth: 740, width: '100%', padding: '40px 44px', borderRadius: 28, background: 'linear-gradient(145deg, rgba(14, 20, 44, 0.96) 0%, rgba(5, 7, 18, 0.99) 100%)', border: '1.5px solid #FFD700', boxShadow: '0 0 120px rgba(255,215,0,0.35), 0 0 60px rgba(0,242,254,0.25), inset 0 0 50px rgba(255,215,0,0.12)', position: 'relative', overflow: 'hidden' }}>
+      {/* ─── PHASE 3: ULTRA-CLASSIFIED MILITARY DOSSIER & CERTIFICATE ─── */}
+      {phase === 'dossier' && (
+        <div style={{ position: 'relative', zIndex: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', maxWidth: 780, pointerEvents: 'auto', animation: 'popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+          <div style={{ width: '100%', padding: '44px 50px', borderRadius: 32, background: 'linear-gradient(145deg, rgba(12, 18, 44, 0.98) 0%, rgba(4, 6, 16, 0.99) 100%)', border: '2px solid #FFD700', boxShadow: '0 0 150px rgba(255,215,0,0.45), 0 0 80px rgba(0,242,254,0.35), inset 0 0 60px rgba(255,215,0,0.15)', position: 'relative', overflow: 'hidden' }}>
             
-            {/* Corner brackets */}
-            <div style={{ position: 'absolute', top: 16, left: 16, width: 20, height: 20, borderTop: '2px solid #FFD700', borderLeft: '2px solid #FFD700' }}/>
-            <div style={{ position: 'absolute', top: 16, right: 16, width: 20, height: 20, borderTop: '2px solid #FFD700', borderRight: '2px solid #FFD700' }}/>
-            <div style={{ position: 'absolute', bottom: 16, left: 16, width: 20, height: 20, borderBottom: '2px solid #FFD700', borderLeft: '2px solid #FFD700' }}/>
-            <div style={{ position: 'absolute', bottom: 16, right: 16, width: 20, height: 20, borderBottom: '2px solid #FFD700', borderRight: '2px solid #FFD700' }}/>
+            <div style={{ position: 'absolute', top: 18, left: 18, width: 26, height: 26, borderTop: '3px solid #FFD700', borderLeft: '3px solid #FFD700', filter: 'drop-shadow(0 0 8px #FFD700)' }}/>
+            <div style={{ position: 'absolute', top: 18, right: 18, width: 26, height: 26, borderTop: '3px solid #FFD700', borderRight: '3px solid #FFD700', filter: 'drop-shadow(0 0 8px #FFD700)' }}/>
+            <div style={{ position: 'absolute', bottom: 18, left: 18, width: 26, height: 26, borderBottom: '3px solid #FFD700', borderLeft: '3px solid #FFD700', filter: 'drop-shadow(0 0 8px #FFD700)' }}/>
+            <div style={{ position: 'absolute', bottom: 18, right: 18, width: 26, height: 26, borderBottom: '3px solid #FFD700', borderRight: '3px solid #FFD700', filter: 'drop-shadow(0 0 8px #FFD700)' }}/>
 
-            <div style={{ textAlign: 'center', marginBottom: 28 }}>
-              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 20px', borderRadius: 24, background: 'rgba(255,215,0,0.15)', border: '1px solid #FFD700', color: '#FFD700', fontFamily: 'var(--font-mono)', fontSize: 11, fontWeight: 900, letterSpacing: 3, marginBottom: 16, boxShadow: '0 0 25px rgba(255,215,0,0.4)' }}>
-                <span>✦ INTERDIMENSIONAL OVERSIGHT COUNCIL ✦</span>
+            <div style={{ textAlign: 'center', marginBottom: 32 }}>
+              <div style={{ display: 'inline-flex', alignItems: 'center', gap: 10, padding: '7px 24px', borderRadius: 28, background: 'rgba(255,215,0,0.2)', border: '1.5px solid #FFD700', color: '#FFD700', fontFamily: 'var(--font-mono)', fontSize: 11.5, fontWeight: 950, letterSpacing: 3.5, marginBottom: 18, boxShadow: '0 0 30px rgba(255,215,0,0.5)' }}>
+                <span>✦ INTERDIMENSIONAL OVERSIGHT COUNCIL · MILITARY ARCHIVE ✦</span>
               </div>
               <h1 style={{
-                fontFamily: 'var(--font-mono)', fontSize: 34, fontWeight: 950,
+                fontFamily: 'var(--font-mono)', fontSize: 36, fontWeight: 950,
                 background: 'linear-gradient(135deg, #FFF 0%, #FFD700 50%, #00F2FE 100%)',
                 WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-                margin: '0 0 10px', letterSpacing: 3, filter: 'drop-shadow(0 0 25px rgba(255,215,0,0.7))'
+                margin: '0 0 10px', letterSpacing: 3.5, filter: 'drop-shadow(0 0 30px rgba(255,215,0,0.8))'
               }}>
-                CLASSIFIED MISSION DOSSIER
+                OFFICIAL VICTORY CERTIFICATE
               </h1>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 13, color: '#00F2FE', letterSpacing: 2, fontWeight: 800 }}>
-                REALITY REIMAGINED · LEVEL 9 CHRONO-ARCHITECT CERTIFIED ✓
+              <div style={{ fontFamily: 'var(--font-mono)', fontSize: 13.5, color: '#00F2FE', letterSpacing: 2.5, fontWeight: 900 }}>
+                LOG ID: #AETHER-2184-SECTOR-4 · GRAND MASTER LEVEL 9 ✓
               </div>
             </div>
 
-            <div style={{ padding: 24, borderRadius: 18, background: 'linear-gradient(145deg, rgba(6,12,28,0.7) 0%, rgba(3,6,14,0.9) 100%)', border: '1px solid rgba(255,255,255,0.12)', marginBottom: 26, display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 20 }}>
-              <div style={{ borderLeft: '3px solid #00ff88', paddingLeft: 16 }}>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9.5, color: '#94a3b8', letterSpacing: 1.5, fontWeight: 700 }}>SECTOR 4 STATUS</div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 17, fontWeight: 950, color: '#00ff88', marginTop: 4 }}>STABILIZED <span style={{ fontSize: 12, color: '#cbd5e1' }}>(0.0% Risk)</span></div>
-                <div style={{ fontSize: 12, color: '#cbd5e1', marginTop: 3 }}>Timelines Alpha-7, 8 & 9 permanently anchored.</div>
+            <div style={{ padding: 28, borderRadius: 22, background: 'linear-gradient(145deg, rgba(6,12,32,0.85) 0%, rgba(3,6,16,0.95) 100%)', border: '1.5px solid rgba(255,215,0,0.3)', marginBottom: 30, display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 24, boxShadow: 'inset 0 0 30px rgba(0,0,0,0.7)' }}>
+              <div style={{ borderLeft: '4px solid #00ff88', paddingLeft: 18 }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: '#94a3b8', letterSpacing: 2, fontWeight: 800 }}>SECTOR 4 INTEGRITY</div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 19, fontWeight: 950, color: '#00ff88', marginTop: 6 }}>100% STABLE <span style={{ fontSize: 12.5, color: '#e2e8f0', fontWeight: 600 }}>(0.0% Risk)</span></div>
+                <div style={{ fontSize: 12.5, color: '#cbd5e1', marginTop: 4 }}>Timelines Alpha-7, 8 & 9 permanently anchored.</div>
               </div>
-              <div style={{ borderLeft: '3px solid #FFD700', paddingLeft: 16 }}>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9.5, color: '#94a3b8', letterSpacing: 1.5, fontWeight: 700 }}>LIVES PRESERVED</div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 17, fontWeight: 950, color: '#FFD700', marginTop: 4 }}>42,000,000,000</div>
-                <div style={{ fontSize: 12, color: '#cbd5e1', marginTop: 3 }}>Zero casualty causal quarantine achieved.</div>
+              <div style={{ borderLeft: '4px solid #FFD700', paddingLeft: 18 }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: '#94a3b8', letterSpacing: 2, fontWeight: 800 }}>LIVES PRESERVED</div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 19, fontWeight: 950, color: '#FFD700', marginTop: 6 }}>42,000,000,000</div>
+                <div style={{ fontSize: 12.5, color: '#cbd5e1', marginTop: 4 }}>Zero casualty causal quarantine achieved.</div>
               </div>
-              <div style={{ borderLeft: '3px solid #00F2FE', paddingLeft: 16 }}>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9.5, color: '#94a3b8', letterSpacing: 1.5, fontWeight: 700 }}>RESONANCE TUNING</div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 17, fontWeight: 950, color: '#00F2FE', marginTop: 4 }}>432.8 MHz — Phase Locked</div>
-                <div style={{ fontSize: 12, color: '#cbd5e1', marginTop: 3 }}>Quantum matter grid decay halted.</div>
+              <div style={{ borderLeft: '4px solid #00F2FE', paddingLeft: 18 }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: '#94a3b8', letterSpacing: 2, fontWeight: 800 }}>RESONANCE TUNING</div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 19, fontWeight: 950, color: '#00F2FE', marginTop: 6 }}>432.8 MHz — Phase Locked</div>
+                <div style={{ fontSize: 12.5, color: '#cbd5e1', marginTop: 4 }}>Quantum matter grid decay permanently halted.</div>
               </div>
-              <div style={{ borderLeft: '3px solid #a855f7', paddingLeft: 16 }}>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 9.5, color: '#94a3b8', letterSpacing: 1.5, fontWeight: 700 }}>COUNCIL CITATION</div>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 17, fontWeight: 950, color: '#c084fc', marginTop: 4 }}>GRAND CHRONO-ARCHITECT</div>
-                <div style={{ fontSize: 12, color: '#cbd5e1', marginTop: 3 }}>Clearance Level 9 Awarded by Council.</div>
+              <div style={{ borderLeft: '4px solid #a855f7', paddingLeft: 18 }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10.5, color: '#94a3b8', letterSpacing: 2, fontWeight: 800 }}>COUNCIL CITATION</div>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: 19, fontWeight: 950, color: '#c084fc', marginTop: 6 }}>GRAND CHRONO-ARCHITECT</div>
+                <div style={{ fontSize: 12.5, color: '#cbd5e1', marginTop: 4 }}>Clearance Level 9 Awarded by Council.</div>
               </div>
             </div>
 
-            <p style={{ fontSize: 13.5, color: '#e2e8f0', lineHeight: 1.7, textAlign: 'center', margin: '0 auto 28px', maxWidth: 620 }}>
-              By isolating the temporal tear, re-tuning the 432.8 MHz harmonic grid, and grafting causal energy from the Prime Anchor via Protocol Zero, you have prevented total simulation de-sync across <strong style={{ color: '#00F2FE' }}>AETHER-OS v9.4</strong>.
+            <p style={{ fontSize: 14.5, color: '#e2e8f0', lineHeight: 1.75, textAlign: 'center', margin: '0 auto 32px', maxWidth: 660, fontWeight: 500 }}>
+              By isolating the temporal tear, re-tuning the 432.8 MHz harmonic grid, and grafting causal energy from the Prime Anchor via Protocol Zero, you have prevented total simulation de-sync across <strong style={{ color: '#00F2FE', fontWeight: 900 }}>AETHER-OS v9.4</strong>. This certificate immortalizes your mastery over space and time.
             </p>
 
-            <div style={{ display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: 18, flexWrap: 'wrap' }}>
               <button
-                onClick={() => { AudioSystem.warpLeap(); setMode('warp') }}
+                onClick={() => { AudioSystem.warpLeap(); setPhase('docked') }}
                 style={{
-                  padding: '14px 28px', borderRadius: 14, background: 'linear-gradient(90deg, #00F2FE, #0088ff)',
-                  border: '1.5px solid #fff', color: '#04060E', fontFamily: 'var(--font-mono)', fontSize: 12.5, fontWeight: 950,
-                  cursor: 'pointer', boxShadow: '0 0 30px rgba(0,242,254,0.5)', letterSpacing: 1.5, transition: 'all 0.2s ease'
+                  padding: '16px 28px', borderRadius: 16, background: 'linear-gradient(135deg, #00F2FE 0%, #0088ff 100%)',
+                  border: '2px solid #fff', color: '#04060E', fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 950,
+                  cursor: 'pointer', boxShadow: '0 0 35px rgba(0,242,254,0.6)', letterSpacing: 1.8, transition: 'all 0.2s ease', textTransform: 'uppercase'
                 }}
               >
-                ✦ RETURN TO VICTORY PORTAL
+                ◄ RETURN TO COUNCIL DOCKING TERMINAL
               </button>
               <button
                 onClick={() => { AudioSystem.reboot(); onRestart?.() }}
                 style={{
-                  padding: '14px 28px', borderRadius: 14, background: 'linear-gradient(90deg, #FFD700, #FFA500)',
-                  border: '1.5px solid #fff', color: '#04060E', fontFamily: 'var(--font-mono)', fontSize: 12.5, fontWeight: 950,
-                  cursor: 'pointer', boxShadow: '0 0 30px rgba(255,215,0,0.55)', letterSpacing: 1.5, transition: 'all 0.2s ease'
+                  padding: '16px 28px', borderRadius: 16, background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+                  border: '2px solid #fff', color: '#04060E', fontFamily: 'var(--font-mono)', fontSize: 13, fontWeight: 950,
+                  cursor: 'pointer', boxShadow: '0 0 35px rgba(255,215,0,0.65)', letterSpacing: 1.8, transition: 'all 0.2s ease', textTransform: 'uppercase'
                 }}
               >
-                🔄 RESTART MISSION FROM ZERO
+                ↻ RESTART MISSION FROM ZERO ➔
               </button>
             </div>
           </div>
