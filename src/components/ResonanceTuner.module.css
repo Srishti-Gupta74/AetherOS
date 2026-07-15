@@ -1,0 +1,148 @@
+.tuner {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 20px;
+  gap: 14px;
+  height: 100%;
+}
+
+.targetHint {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sliders {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+  justify-content: center;
+}
+
+.sliderRow {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sliderLabel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sliderVal {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.alignedTag {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0,242,254,0.15);
+  color: var(--cyan);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.trackWrapper {
+  position: relative;
+}
+
+.track {
+  position: relative;
+  height: 5px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  overflow: visible;
+}
+
+.fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.05s linear, background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.targetMarker {
+  position: absolute;
+  top: -5px;
+  width: 3px;
+  height: 14px;
+  background: var(--cyan);
+  border-radius: 1.5px;
+  transform: translateX(-50%);
+  box-shadow: 0 0 8px var(--cyan);
+  opacity: 0.8;
+}
+
+.rangeInput {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  width: 100%;
+  -webkit-appearance: none;
+  height: 5px;
+  background: transparent;
+  outline: none;
+  cursor: pointer;
+}
+
+.rangeInput::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--thumb-color, #00F2FE);
+  box-shadow: 0 0 12px var(--thumb-color, #00F2FE);
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+.rangeInput::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.waveform {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 22px;
+  margin-top: 4px;
+}
+
+.bar {
+  flex: 1;
+  border-radius: 1px;
+  transition: height 0.1s ease, background 0.3s ease;
+  min-height: 2px;
+}
+
+.alignedBanner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: linear-gradient(90deg, rgba(0,242,254,0.1), rgba(127,0,255,0.15), rgba(0,242,254,0.1));
+  border: 1px solid var(--cyan);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--cyan);
+  letter-spacing: 1.5px;
+  box-shadow: 0 0 20px rgba(0,242,254,0.2);
+  animation: bannerPulse 2s ease-in-out infinite;
+}
+
+@keyframes bannerPulse {
+  0%, 100% { box-shadow: 0 0 20px rgba(0,242,254,0.2); }
+  50% { box-shadow: 0 0 35px rgba(0,242,254,0.45); }
+}
